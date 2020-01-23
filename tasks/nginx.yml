@@ -1,0 +1,71 @@
+#############################################################
+# Nginx Server Setup, thanks Digital Ocean Community Guide :)
+#############################################################
+
+---
+- name: Install Prerequisites
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - nginx
+  tags:
+    - nginx
+
+- name: Make sure log dir are owned by www-data
+  file:
+    state: directory
+    recurse: yes
+    path: /var/log/nginx/
+    owner: www-data
+    group: www-data
+  tags:
+    - nginx
+
+- name: Update nginx conf
+  template:
+    src: nginx.conf.tpl
+    dest: /etc/nginx/nginx.conf
+  notify: restart nginx
+  tags:
+    - nginx
+
+# use a loop to remove all symlinks
+# but recreate the directory
+- name: Disable all enabled sites
+  file:
+    state: "{{ item }}"
+    path: /etc/nginx/sites-enabled/
+  with_items:
+    - absent
+    - directory
+  tags:
+    - nginx
+
+- name: Test that the nginx config is valid
+  shell: nginx -c /etc/nginx/nginx.conf -t
+  tags:
+    - nginx
+
+- name: UFW - Allow HTTP + HTTPS Connections
+  ufw:
+    rule: allow
+    name: Nginx Full
+  tags:
+    - nginx
+
+- name: Generate the new personal site config
+  template:
+    src=site-default.tpl
+    dest=/etc/nginx/sites-available/default
+  notify: restart nginx
+  tags:
+    - nginx
+
+- name: Enable the personal site
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  tags:
+    - nginx

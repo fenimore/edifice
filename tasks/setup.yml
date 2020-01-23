@@ -1,0 +1,131 @@
+##############################################################
+# Initial Server Setup, thanks Digital Ocean Community Guide :)
+#
+# Install system packages
+# Sudo Group Setup
+# User Setup
+# Copy Keys
+# Disable password auth
+# Set up UFW and fail2ban
+# Add SSH Banner
+#
+# see handlers.yml for the handler definitions
+##############################################################
+---
+- name: Install Prerequisites
+  apt:
+    name: aptitude
+    update_cache: yes
+    state: latest
+    force_apt_get: yes
+  tags:
+    - setup
+
+- name: Install required system packages for configuration management
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - curl
+      - ufw
+      - fail2ban
+      - htop
+      - tree
+  tags:
+    - setup
+
+# Sudo Group Setup
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+  tags:
+    - setup
+    - user
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: '/usr/sbin/visudo -cf %s'
+  tags:
+    - setup
+    - user
+
+# User + Key Setup
+- name: Create a new regular user with sudo privileges
+  user:
+    name: "{{ personal_user }}"
+    state: present
+    groups: wheel
+    append: true
+    create_home: true
+    shell: /bin/bash
+  tags:
+    - setup
+    - user
+
+- name: Set authorized key for remote user
+  authorized_key:
+    user: "{{ personal_user }}"
+    state: present
+    key: "{{ copy_local_key }}"
+  tags:
+    - setup
+    - user
+
+- name: Disable password authentication for root
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin prohibit-password'
+  tags:
+    - setup
+    - user
+    - ssh
+
+- name: UFW - Allow SSH connections
+  ufw:
+    rule: allow
+    name: OpenSSH
+  tags:
+    - setup
+    - ssh
+
+- name: UFW - Deny all other incoming traffic by default
+  ufw:
+    state: enabled
+    policy: deny
+    direction: incoming
+  tags:
+    - setup
+    - ssh
+
+- name: Enable fail2ban
+  service:
+    name: fail2ban
+    enabled: yes
+  tags:
+    - setup
+    - ssh
+
+- name: Add SSH banner for fun!
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    line: "Banner /etc/banner"
+  notify: restart sshd
+  tags:
+    - setup
+    - ssh
+
+- name: Banner template
+  copy:
+    content: "{{ banner_text }}"
+    dest: /etc/banner
+  tags:
+    - setup
+    - ssh

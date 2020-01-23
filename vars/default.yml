@@ -1,0 +1,21 @@
+---
+domain: domain.com
+
+letsencrypt_email: person@domain.com
+
+personal_user: fenimore
+
+copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+
+banner_text: |
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~     ____                           ~
+  ~    / __ )________  ___  ____  ___  ~
+  ~   / __  / ___/ _ \/ _ \/_  / / _ \ ~
+  ~  / /_/ / /  /  __/  __/ / /_/  __/ ~
+  ~ /_____/_/   \___/\___/ /___/\___/  ~
+  ~                                    ~
+  ~                                    ~
+  ~        Welcome! Stay a While!      ~
+  ~                                    ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

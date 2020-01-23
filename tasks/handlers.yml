@@ -1,0 +1,22 @@
+# Handlers for restarting services and updating ownership of files
+---
+
+- name: restart nginx
+  service:
+    name=nginx
+    state=restarted
+    enabled=yes
+
+- name: restart sshd
+  service:
+    name=sshd
+    state=restarted
+
+# for reverting ownership of dir to www-data
+- name: wwww-data directory
+  file:
+    state: directory
+    recurse: yes
+    path: /var/www/html/
+    owner: www-data
+    group: www-data

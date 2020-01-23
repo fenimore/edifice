@@ -1,0 +1,63 @@
+####################################################################################
+# Certbot / letsencrypt module
+#
+# Because of certbot it's basically trivial to setup SSL.
+# There are a couple of gotchas:
+#
+# If you don't run `certonly` then nginx will automatically update an
+# enabled site. This is problematic for automation with ansible
+#
+# The renewal dry-run with stop and start nginx, but it starts without systemctl,
+# This causes issues later when the handler itself restarts nginx. So the solution
+# is to run it with --installer non
+#
+# also, as usual, thanks arch: https://wiki.archlinux.org/index.php/Certbot
+#
+####################################################################################
+---
+- name: Add PPA for certbot
+  apt_repository:
+    repo: ppa:certbot/certbot
+    state: present
+
+- name: Install required system packages for certbot
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - certbot
+      - python-certbot-nginx
+  tags:
+    - nginx
+    - letencrypt
+
+# run with certonly so it doesn't modify site-enabled sites
+- name: Certbot magically edits Nginx Configuration, turning on HTTPS
+  shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --agree-tos --domains={{ domain }},www.{{ domain }}
+  tags:
+    - nginx
+    - letencrypt
+
+# This config is included in the wildcard include in nginx.conf
+- name: Add certbot config for nginx sites
+  template:
+    src: certbot.conf.tpl
+    dest: /etc/nginx/conf.d/001-certbot.conf
+  tags:
+    - nginx
+    - letencrypt
+
+- name: Make sure www-data user can access keys
+  file:
+    state: directory
+    recurse: yes
+    path: /etc/letsencrypt/live/
+    owner: www-data
+    group: www-data
+
+# installer none will not start rogue nginx
+- name: Certbot dry run renew test
+  shell: certbot --installer none --dry-run renew
+  tags:
+    - nginx
+    - letencrypt

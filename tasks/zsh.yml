@@ -1,0 +1,39 @@
+#################################################
+# My Zsh config + plugins
+#
+#################################################
+---
+- name: Install Prerequisites
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - zsh
+      - git
+
+- name: check if oh my zsh is already there (and dont install if it is)
+  stat:
+    path: /home/{{ personal_user }}/oh-my-zsh
+  register: oh_my_zsh
+
+- name: Install oh my Zsh
+  become_user: "{{ personal_user }}"
+  when: oh_my_zsh.stat.exists == True
+  shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+- name: Update zshrc Config
+  template:
+    owner: "{{ personal_user }}"
+    src: zshrc.tpl
+    dest: /home/{{ personal_user }}/.zshrc
+
+- name: Install zsh autosuggestions
+  become_user: "{{ personal_user }}"
+  git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions.git
+    dest: /home/{{ personal_user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
+- name: Change User shell
+  user:
+    name: "{{ personal_user }}"
+    shell: /bin/zsh
