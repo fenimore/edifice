@@ -1,6 +1,6 @@
 ---
 - name: Setup Remote host with new user and nginx server
-  hosts: all
+  hosts: web
   become: yes
   vars_files: vars/default.yml
 

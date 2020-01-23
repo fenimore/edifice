@@ -1,7 +1,7 @@
 ---
-domain: timenotclocks.com
-letsencrypt_email: exorable.ludos@gmail.com
 personal_user: fenimore
+domain: timenotclocks.com
+letsencrypt_email: fenimore@timenotclocks.com
 
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 
