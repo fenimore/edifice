@@ -69,3 +69,5 @@
     state: link
   tags:
     - nginx
+
+- include: letsencrypt.yml

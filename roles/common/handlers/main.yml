@@ -1,0 +1,6 @@
+# Handlers for restarting services and updating ownership of files
+---
+- name: restart sshd
+  service:
+    name=sshd
+    state=restarted

@@ -1,9 +1,9 @@
-###############
-# Example hosts
-###############
+###########################
+# Fenimore's little webhost
+###########################
 
 [web]
-my.ip.address
+64.227.18.40
 
 ##########################################################################
 # Makes sure we use Python 3 (/usr/bin/python3) on remote hosts.

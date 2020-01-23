@@ -32,7 +32,7 @@
     - letencrypt
 
 # run with certonly so it doesn't modify site-enabled sites
-- name: Certbot magically edits Nginx Configuration, turning on HTTPS
+- name: Certbot magically prooves you own the site
   shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --agree-tos --domains={{ domain }},www.{{ domain }}
   tags:
     - nginx
