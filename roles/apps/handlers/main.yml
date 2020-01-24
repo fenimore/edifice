@@ -1,0 +1,8 @@
+---
+- name: wwww-data directory
+  file:
+    state: directory
+    recurse: yes
+    path: /var/www/html
+    owner: www-data
+    group: www-data

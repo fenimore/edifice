@@ -1,7 +1,6 @@
 #############################################################
 # Nginx Server Setup, thanks Digital Ocean Community Guide :)
 #############################################################
-
 ---
 - name: Install Prerequisites
   apt:
@@ -42,11 +41,6 @@
   tags:
     - nginx
 
-- name: Test that the nginx config is valid
-  shell: nginx -c /etc/nginx/nginx.conf -t
-  tags:
-    - nginx
-
 - name: UFW - Allow HTTP + HTTPS Connections
   ufw:
     rule: allow
@@ -67,6 +61,11 @@
     src: /etc/nginx/sites-available/default
     dest: /etc/nginx/sites-enabled/default
     state: link
+  tags:
+    - nginx
+
+- name: Test that the nginx config is valid
+  shell: nginx -c /etc/nginx/nginx.conf -t
   tags:
     - nginx
 

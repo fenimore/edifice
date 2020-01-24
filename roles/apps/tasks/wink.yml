@@ -1,0 +1,71 @@
+#################################################
+# Set Up the "Wink" PHP app
+#################################################
+# Tasks for installing the Wink photo app
+---
+- name: Install required system packages for PHP app (default is 7)
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - php
+      - php-fpm
+      - php-gd
+      - php-zip
+  tags:
+    - app
+    - wink
+
+- name: Git clone the wink app
+  git:
+    repo: https://github.com/fenimore/wink
+    dest: /var/www/html/wink
+  notify: wwww-data directory
+  tags:
+    - app
+    - wink
+
+- name: Add wink ini
+  template:
+    src: wink.ini.tpl
+    dest: /var/www/html/wink/wink.ini
+  notify: wwww-data directory
+  tags:
+    - app
+    - wink
+
+# Use a loop to remove all symlinks
+# but recreate the directory
+- name: Disable all enabled sites
+  file:
+    state: "{{ item }}"
+    path: /etc/nginx/sites-enabled/
+  with_items:
+    - absent
+    - directory
+  tags:
+    - nginx
+
+- name: Generate the new personal site config
+  template:
+    src: site-wink.tpl
+    dest: /etc/nginx/sites-available/wink
+  notify: restart nginx
+  tags:
+    - app
+    - wink
+
+- name: Activate the personal site
+  file:
+    src: /etc/nginx/sites-available/wink
+    dest: /etc/nginx/sites-enabled/wink
+    state: link
+  notify: restart nginx
+  tags:
+    - app
+    - wink
+
+- name: Test that the nginx config is valid
+  shell: nginx -c /etc/nginx/nginx.conf -t
+  tags:
+    - nginx

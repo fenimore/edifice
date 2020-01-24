@@ -29,8 +29,14 @@
       - curl
       - ufw
       - fail2ban
-      - htop
-      - tree
+  tags:
+    - setup
+
+- name: Install extra packages
+  apt:
+    state: latest
+    update_cache: yes
+    name: "{{ extra_packages }}"
   tags:
     - setup
 
@@ -130,4 +136,8 @@
     - setup
     - ssh
 
-- include: zsh.yml
+- name: Set up zsh and oh-my-zsh
+  include: zsh.yml
+
+- name: Clone and stow Dotfiles
+  include: dotfiles.yml

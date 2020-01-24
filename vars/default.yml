@@ -1,9 +1,12 @@
 ---
 personal_user: fenimore
+personal_github: fenimore
 domain: timenotclocks.com
 letsencrypt_email: fenimore@timenotclocks.com
 
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+
+extra_packages: [tree, htop, wget, goaccess, python3]
 
 banner_text: |
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,3 +20,8 @@ banner_text: |
   ~        Welcome! Stay a While!      ~
   ~                                    ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Wink configuration
+wink_admin: ''
+wink_visit: ''
+wink_publisher: ''

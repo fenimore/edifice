@@ -1,0 +1,38 @@
+#################################################
+# My Dotfiles
+#################################################
+---
+- name: Install required system packages
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - git
+      - stow
+  tags:
+    -config
+
+- name: Clone dotfiles from github
+  become_user: "{{ personal_user }}"
+  git:
+    repo: https://github.com/{{ personal_github }}/dotfiles
+    dest: /home/{{ personal_user }}/dotfiles
+  tags:
+    -config
+
+- name: Stow latest spacemacs config files
+  become_user: "{{ personal_user }}"
+  shell:
+    chdir: /home/{{ personal_user }}/dotfiles
+    cmd: stow spacemacs-remote
+  tags:
+    -config
+
+- name: Install spacemacsconfig
+  become_user: "{{ personal_user }}"
+  git:
+    repo: https://github.com/syl20bnr/spacemacs
+    version: develop
+    dest: /home/{{ personal_user }}/.emacs.d
+  tags:
+    -config
