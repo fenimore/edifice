@@ -1,7 +1,8 @@
-#################################################
+#########################################
 # Set Up the "Wink" PHP app
-#################################################
+#
 # Tasks for installing the Wink photo app
+#########################################
 ---
 - name: Install required system packages for PHP app (default is 7)
   apt:
