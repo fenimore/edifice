@@ -1,0 +1,20 @@
+---
+# Add specified repository into sources list.
+- name: Add PPA for emacs26 'eye roll'...
+  apt_repository:
+    repo: ppa:kelleyk/emacs
+    state: present
+  tags:
+    - setup
+    - emacs
+
+- name: Install Emacs 26 and zile
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - emacs26  # remove once debian catches up
+      - zile
+  tags:
+    - setup
+    - emacs

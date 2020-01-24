@@ -141,3 +141,6 @@
 
 - name: Clone and stow Dotfiles
   include: dotfiles.yml
+
+- name: Clone and stow emacs 26
+  include: emacs26.yml
