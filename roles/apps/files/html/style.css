@@ -44,6 +44,9 @@ body {
     position:fixed;
 }
 
+.INVISIBLE { color: white;}
+
+
 a {
     color: #389c6e;
     text-decoration:none;

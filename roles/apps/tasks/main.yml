@@ -2,6 +2,24 @@
 # Set Up some git apps
 #################################################
 ---
+- name: Install required system packages for deploying apps
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - git
+  tags:
+    - app
+
+- name: Upload homepage html and css
+  copy:
+    src: html/
+    dest: /var/www/html/
+  notify: wwww-data directory
+  tags:
+    - app
+    - homepage
+
 - name: Git clone the portfolio app
   git:
     repo: https://github.com/fenimore/fenimore.github.io
@@ -14,14 +32,6 @@
   git:
     repo: https://github.com/{{ personal_github }}/devinettes-web
     dest: /var/www/html/devinettes
-  notify: wwww-data directory
-  tags:
-    - app
-
-- name: Upload homepage html and css
-  copy:
-    src: html/
-    dest: /var/www/html/
   notify: wwww-data directory
   tags:
     - app
