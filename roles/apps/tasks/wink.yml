@@ -14,59 +14,78 @@
       - php-gd
       - php-zip
   tags:
-    - app
+    - wink
+
+- name: Create subdomain directory
+  file:
+    state: directory
+    path: /var/www/wink.timenotclocks.com
+    owner: www-data
+    group: www-data
+  tags:
+    - wink
+
+- name: Add subdomain to /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    state: present
+    line: '{{ ansible_eth0.ipv4.address }} wink.{{ domain }}'
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - wink
+
+- debug:
+    msg: Set the subdomain A / AAAA record in DNS records for wink.{{ domain }}
+  tags:
     - wink
 
 - name: Git clone the wink app
   git:
     repo: https://github.com/fenimore/wink
-    dest: /var/www/html/wink
+    dest: /var/www/wink.{{ domain }}
   notify: wwww-data directory
   tags:
-    - app
     - wink
 
 - name: Add wink ini
   template:
-    src: wink.ini.tpl
-    dest: /var/www/html/wink/wink.ini
+    src: wink.ini.j2
+    dest: /var/www/wink.{{ domain }}/wink.ini
   notify: wwww-data directory
   tags:
-    - app
     - wink
-
-# Use a loop to remove all symlinks
-# but recreate the directory
-- name: Disable all enabled sites
-  file:
-    state: "{{ item }}"
-    path: /etc/nginx/sites-enabled/
-  with_items:
-    - absent
-    - directory
-  tags:
-    - nginx
 
 - name: Generate the new personal site config
   template:
-    src: site-wink.tpl
+    src: site-wink.j2
     dest: /etc/nginx/sites-available/wink
   notify: restart nginx
   tags:
-    - app
     - wink
 
-- name: Activate the personal site
+- name: Activate the default and wink site
   file:
-    src: /etc/nginx/sites-available/wink
-    dest: /etc/nginx/sites-enabled/wink
+    src: /etc/nginx/sites-available/{{ item }}
+    dest: /etc/nginx/sites-enabled/{{item }}
     state: link
   notify: restart nginx
+  with_items:
+    - default
+    - wink
   tags:
-    - app
+    - wink
+
+# run with certonly so it doesn't modify site-enabled sites
+# will fail without setting DNS records
+- name: Certbot generate keys for wink subdomain
+  shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --agree-tos --cert-name {{ domain }} --domains={{ domain }},{{ domain}},wink.{{ domain }},www.wink.{{ domain }}
+  tags:
     - wink
 
 - name: Test that the nginx config is valid
   shell: nginx -c /etc/nginx/nginx.conf -t
   tags:
+    - wink
     - nginx

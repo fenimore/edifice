@@ -4,3 +4,13 @@
     name=nginx
     state=restarted
     enabled=yes
+
+# Use a loop to remove all symlinks
+# but recreate the directory
+- name: disable all sites
+  file:
+    state: "{{ item }}"
+    path: /etc/nginx/sites-enabled/
+  with_items:
+    - absent
+    - directory

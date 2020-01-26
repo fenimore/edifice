@@ -29,23 +29,23 @@
       - python-certbot-nginx
   tags:
     - nginx
-    - letencrypt
+    - letsencrypt
 
 # run with certonly so it doesn't modify site-enabled sites
 - name: Certbot magically prooves you own the site
-  shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --agree-tos --domains={{ domain }},www.{{ domain }}
+  shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --cert-name={{ domain }} --agree-tos --domains={{ domain }},www.{{ domain }}
   tags:
     - nginx
-    - letencrypt
+    - letsencrypt
 
 # This config is included in the wildcard include in nginx.conf
 - name: Add certbot config for nginx sites
   template:
-    src: certbot.conf.tpl
+    src: certbot.conf.j2
     dest: /etc/nginx/conf.d/001-certbot.conf
   tags:
     - nginx
-    - letencrypt
+    - letsencrypt
 
 - name: Make sure www-data user can access keys
   file:
@@ -60,4 +60,4 @@
   shell: certbot --installer none --dry-run renew
   tags:
     - nginx
-    - letencrypt
+    - letsencrypt
