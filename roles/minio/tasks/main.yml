@@ -1,0 +1,110 @@
+#################################################
+# Set Up some git apps
+#################################################
+---
+- name: Install required system packages for minio
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - wget
+  tags:
+    - minio
+
+- name: Create a new Minio user
+  user:
+    name: minio
+    state: present
+    groups: wheel
+    append: true
+    create_home: true
+    shell: /sbin/nologin
+  tags:
+    - minio
+
+- name: Download minio binary
+  get_url:
+    url: https://dl.min.io/server/minio/release/linux-amd64/minio
+    owner: "{{ minio_user }}"
+    group: "{{ minio_user }}"
+    dest: /usr/local/bin
+    mode: '+x'
+  tags:
+    - minio
+
+- name: Create config directory
+  file:
+    state: directory
+    path: /etc/minio
+    owner: "{{ minio_user }}"
+    group: "{{ minio_user }}"
+  tags:
+    - minio
+
+- name: Create config directory
+  file:
+    state: directory
+    path: /usr/local/share/minio
+    group: "{{ minio_user }}"
+    owner: "{{ minio_user }}"
+    mode: "u+rxw"
+  tags:
+    - minio
+
+- name: Set minio config environment file
+  template:
+    owner: "{{ minio_user }}"
+    group: "{{ minio_user }}"
+    src: minio.env.j2
+    dest: /etc/default/minio
+    mode: '0640'
+  tags:
+    - minio
+
+- name: Set minio service
+  template:
+    src: minio.service.j2
+    dest: /etc/systemd/system/minio.service
+  notify: restart minio
+  tags:
+    - minio
+
+- name: Reload minio service
+  systemd:
+    daemon_reload: yes
+    state: started
+    enabled: yes
+    name: minio
+  tags:
+    - minio
+
+- name: Generate the minio proxy pass server block
+  template:
+    src: minio-site.j2
+    dest: /etc/nginx/sites-available/minio
+  notify: restart nginx
+  tags:
+    - minio
+
+- name: Activate minio proxy pass site
+  file:
+    src: /etc/nginx/sites-available/minio
+    dest: /etc/nginx/sites-enabled/minio
+    state: link
+  notify: restart nginx
+  tags:
+    - minio
+
+# TODO: add thsi to letsencrypt with "list of subdomain" instead
+# of having it live here and in wink.yml
+# run with certonly so it doesn't modify site-enabled sites
+# will fail without setting DNS records
+- name: Certbot add keys for storage subdomain
+  shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --agree-tos --cert-name {{ domain }} --domains={{ domain }},{{ domain}},wink.{{ domain }},www.wink.{{ domain }},storage.{{ domain }}
+  tags:
+    - minio
+
+- name: Test that the nginx config is valid
+  shell: nginx -c /etc/nginx/nginx.conf -t
+  tags:
+    - minio

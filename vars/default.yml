@@ -1,12 +1,18 @@
 ---
 personal_user: fenimore
 personal_github: fenimore
+personal_public_ip: 11.11.11.11
 domain: timenotclocks.com
 letsencrypt_email: fenimore@timenotclocks.com
 
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 
 extra_packages: [tree, htop, wget, goaccess, python3]
+
+minio_secret_key: minio
+minio_access_key: miniostorage
+
+
 
 banner_text: |
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

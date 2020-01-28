@@ -1,0 +1,17 @@
+---
+- name: Set up analytics db
+  file:
+    state: directory
+    path: /usr/local/share/goaccess/
+  tags:
+    - analytics
+
+
+- name: Create cron job that loads access log into analytics db and empties the log
+  cron:
+    name: check dirs
+    minute: "*"
+    hour: "*/1"
+    job: goaccess /var/log/nginx/access.log -a --keep-db-files -o /var/www/html/report.html --log-format=COMBINED --load-from-disk --keep-db-files --db-path=/usr/local/share/goaccess; true > /var/log/nginx/access.log
+  tags:
+    - analytics

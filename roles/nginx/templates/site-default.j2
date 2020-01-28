@@ -18,7 +18,8 @@ server {
   listen [::]:80 default_server;
 
   listen [::]:443 ssl ipv6only=on; # managed by Ansible from Certbot
-  listen 443 ssl;                  # managed by Ansible from Certbot
+  listen 443 ssl;
+
 
   # Note: You should disable gzip for SSL traffic.
   # See: https://bugs.debian.org/773332 TODO:
@@ -34,4 +35,12 @@ server {
     # as directory, then fall back to displaying a 404.
     try_files $uri $uri/ =404;
   }
+
+  location ^~ /report.html {
+    # This is page is restricted to me (analytics)
+    access_log off;
+    allow {{ personal_public_ip }};
+    deny all;
+  }
+
 }

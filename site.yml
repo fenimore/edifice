@@ -3,8 +3,13 @@
   hosts: web
   become: yes
   vars_files: vars/main.yml
-
+  environment:
+    MINIO_VOLUMES: /usr/local/share/minio/
+    MINIO_OPTS: -C /etc/minio --address ':9000'
+    MINIO_ACCESS_KEY: "{{ minio_access_key }}"
+    MINIO_SECRET_KEY: "{{ minio_access_key }}"
   roles:
     - common
     - nginx
     - apps
+    - minio

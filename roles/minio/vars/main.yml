@@ -1,0 +1,4 @@
+minio_user: minio
+
+minio_opts: --config-dir /etc/minio --address {{ ansible_eth0.ipv4.address }}:9000
+minio_volumes: /usr/local/share/minio/

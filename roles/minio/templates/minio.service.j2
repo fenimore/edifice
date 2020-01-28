@@ -1,0 +1,27 @@
+[Unit]
+Description=MinIO
+Documentation=https://docs.min.io
+AssertFileIsExecutable=/usr/local/bin/minio
+# TODO: Wants/After
+
+[Service]
+WorkingDirectory=/usr/local/
+User={{ minio_user }}
+Group={{ minio_user }}
+EnvironmentFile=/etc/default/minio
+ExecStart=/usr/local/bin/minio server {{ minio_opts }} {{ minio_volumes }}
+
+# Let systemd restart this service always
+Restart=always
+
+# Specifies the maximum file descriptor number that can be opened by this process
+LimitNOFILE=65536
+
+# Disable timeout logic and wait until process is stopped
+TimeoutStopSec=infinity
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target
+
+# Built for ${project.name}-${project.version} (${project.name})
