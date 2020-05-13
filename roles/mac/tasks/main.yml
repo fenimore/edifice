@@ -1,0 +1,33 @@
+---
+- name: check if oh my zsh is already there (and dont install if it is)
+  stat:
+    path: /Users/{{ personal_user }}/oh-my-zsh
+  register: oh_my_zsh
+
+- name: Install oh my Zsh
+  become_user: "{{ personal_user }}"
+  when: oh_my_zsh.stat.exists == True
+  shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+- name: Install zsh autosuggestions
+  become_user: "{{ personal_user }}"
+  git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions.git
+    dest: /Users/{{ personal_user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
+- name: Change User shell
+  user:
+    name: "{{ personal_user }}"
+    shell: /bin/zsh
+
+- name: Install spacemacsconfig
+  become_user: "{{ personal_user }}"
+  git:
+    repo: https://github.com/syl20bnr/spacemacs
+    version: develop
+    dest: /Users/{{ personal_user }}/.emacs.d
+  tags:
+    -config
+
+- name: Clone and stow Dotfiles
+  include: dotfiles.yml
