@@ -20,6 +20,9 @@
     name: "{{ personal_user }}"
     shell: /bin/zsh
 
+- name: Link Emacs App
+  shell: ln -s  /usr/local/opt/emacs-plus/Emacs.app /Applications
+
 - name: Install spacemacsconfig
   become_user: "{{ personal_user }}"
   git:
