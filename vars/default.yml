@@ -12,8 +12,6 @@ extra_packages: [tree, htop, wget, goaccess, python3]
 minio_secret_key: minio
 minio_access_key: miniostorage
 
-
-
 banner_text: |
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~     ____                           ~
@@ -31,3 +29,24 @@ banner_text: |
 wink_admin: ''
 wink_visit: ''
 wink_publisher: ''
+
+# Jitsi Config
+jitsi_meet_server_name: opticon.com
+letsencrypt_account_email: email@email.com
+letsencrypt_cert:
+  name: "{{ jitsi_meet_server_name }}"
+  challenge: http
+  http_auth: standalone
+  webroot_path: "/var/www/html/"
+  domains:
+    - "www.{{ jitsi_meet_server_name }}"
+    - "{{ jitsi_meet_server_name }}"
+jitsi_meet_videobridge_secret: CHANGEME
+jitsi_meet_videobridge_password: CHANGEME
+jitsi_meet_videobridge_muc_nickname: CHANGEME-uuid
+jitsi_meet_jicofo_secret: CHANGEME
+jitsi_meet_jicofo_password: CHANGEME
+jitsi_meet_turn_secret: CHANGEME
+jitsi_meet_ssl_cert_path: "/etc/letsencrypt/live/{{ jitsi_meet_server_name }}/cert.pem"
+jitsi_meet_ssl_key_path: "/etc/letsencrypt/live/{{ jitsi_meet_server_name }}/privkey.pem"
+jitsi_meet_title: Opticon
