@@ -1,0 +1,23 @@
+# The systemli install is tested for Debian 10
+# Galaxy packages
+# ansible-galaxy install systemli.letsencrypt
+# ansible-galaxy install systemli.jitsi_meet
+---
+- name: Setup personal Jitsi server
+  become: yes
+  hosts: opticon
+  vars_files: vars/main.yml
+  roles:
+     - { role: systemli.letsencrypt }
+     - { role: systemli.jitsi_meet }
+  tasks:
+    - name: Install Prerequisites  # must be installed before jitsi
+      apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+    - name: Stop nginx  # so letsencrypt can bind 80
+      service:
+        name: nginx
+        state: stopped
+        enabled: yes

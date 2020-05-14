@@ -78,6 +78,13 @@
   tags:
     - minio
 
+- name: Allow access to port 9000
+  ufw:
+    rule: allow
+    port: '9000'
+  tags:
+    - minio
+
 - name: Generate the minio proxy pass server block
   template:
     src: minio-site.j2
