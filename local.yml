@@ -1,0 +1,35 @@
+---
+- name: Setup my local mac
+  hosts: local
+  connection: local
+  roles:
+    - geerlingguy.homebrew
+    - mac
+  vars:
+    - personal_user: flove
+    - homebrew_cask_accept_external_apps: true
+    - homebrew_taps:
+        - d12frosted/emacs-plus
+    - homebrew_installed_packages:
+        - htop
+        - tree
+        - stow
+        - wget
+        - node
+        - zsh
+        - zile
+        - watch
+        - tmux
+        - just
+        - cowsay
+        - git
+        - postgresql
+        - emacs-plus
+        - python
+    - homebrew_cask_apps:
+        - dashlane
+        - firefox
+        - spectacle
+        - slack
+        - docker
+        - google-chrome

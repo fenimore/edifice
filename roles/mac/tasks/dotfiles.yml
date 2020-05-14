@@ -1,0 +1,36 @@
+#################################################
+# My Dotfiles
+#################################################
+---
+- name: Clone dotfiles from github
+  become_user: "{{ personal_user }}"
+  git:
+    repo: https://github.com/fenimore/dotfiles
+    dest: /Users/{{ personal_user }}/dotfiles
+    force: yes
+  tags:
+    -config
+
+- name: Stow latest spacemacs config files
+  become_user: "{{ personal_user }}"
+  shell:
+    chdir: /Users/{{ personal_user }}/dotfiles
+    cmd: stow spacemacs
+  tags:
+    -config
+
+- name: Stow git
+  become_user: "{{ personal_user }}"
+  shell:
+    chdir: /Users/{{ personal_user }}/dotfiles
+    cmd: stow git
+  tags:
+    -config
+
+- name: Stow zsh
+  become_user: "{{ personal_user }}"
+  shell:
+    chdir: /Users/{{ personal_user }}/dotfiles
+    cmd: stow zsh_mac
+  tags:
+    -config

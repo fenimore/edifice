@@ -8,6 +8,8 @@
 [opticon]
 134.122.1.43
 
+[local]
+127.0.0.1
 
 ##########################################################################
 # Makes sure we use Python 3 (/usr/bin/python3) on remote hosts.
