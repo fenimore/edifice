@@ -6,3 +6,17 @@
     path: /var/www/
     owner: www-data
     group: www-data
+
+- name: restart treasure
+  service:
+    name=treasure
+    state=restarted
+    enabled=yes
+
+- name: wwww-data env directory
+  file:
+    state: directory
+    recurse: yes
+    path: /usr/local/share/treasure
+    owner: www-data
+    group: www-data

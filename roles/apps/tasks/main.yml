@@ -39,3 +39,7 @@
 # TODO: set up sub domain instead
 - name: Include the Wink Photo App
   include: wink.yml
+
+# TODO: set up sub domain instead
+- name: Include the Treasure Map
+  include: treasure.yml

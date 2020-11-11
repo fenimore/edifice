@@ -1,0 +1,24 @@
+[Unit]
+Description=Treasure map
+AssertFileIsExecutable=/usr/local/share/treasure/venv/bin/gunicorn
+
+[Service]
+WorkingDirectory=/var/www/treasure.{{ domain }}/
+User=www-data
+Group=www-data
+ExecStart=/usr/local/share/treasure/venv/bin/gunicorn --workers=2 'wsgi:app'
+
+# Let systemd restart this service always
+Restart=always
+
+# Specifies the maximum file descriptor number that can be opened by this process
+LimitNOFILE=65536
+
+# Disable timeout logic and wait until process is stopped
+TimeoutStopSec=infinity
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target
+
+# Built for ${project.name}-${project.version} (${project.name})

@@ -77,7 +77,7 @@
 # run with certonly so it doesn't modify site-enabled sites
 # will fail without setting DNS records
 - name: Certbot generate keys for wink subdomain
-  shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --agree-tos --cert-name {{ domain }} --domains={{ domain }},{{ domain}},wink.{{ domain }},www.wink.{{ domain }},storage.{{ domain }}
+  shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --agree-tos --cert-name {{ domain }} --domains={{ domain }},{{ domain}},wink.{{ domain }},www.wink.{{ domain }},storage.{{ domain }},treasure.{{ domain }},www.treasure.{{ domain }}
   tags:
     - wink
 

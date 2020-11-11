@@ -1,0 +1,150 @@
+---
+- name: Install required system packages for the Treasure Map
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - python3
+      - python3-virtualenv
+      - python3.8
+      - virtualenv
+  tags:
+    - treasure
+
+- name: Create virtual environment
+  pip:
+    virtualenv: /usr/local/share/treasure/venv/
+    virtualenv_python: python3.8
+    name:
+      - gunicorn
+  notify: wwww-data env directory
+  tags:
+    - treasure
+
+- name: Create subdomain directory
+  file:
+    state: directory
+    path: '/var/www/treasure.{{ domain }}'
+    owner: www-data
+    group: www-data
+  tags:
+    - treasure
+
+- name: Add subdomain to /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    state: present
+    line: '{{ ansible_eth0.ipv4.address }} treasure.{{ domain }}'
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - treasure
+
+- debug:
+    msg: Set the subdomain A / AAAA record in DNS records for treasure.{{ domain }}
+  tags:
+    - treasure
+
+- name: Git clone the stuff repo
+  git:
+    repo: https://github.com/fenimore/stuff
+    dest: '/home/{{ personal_user }}/stuff'
+  tags:
+    - treasure
+
+- name: install stuff pip requirements
+  pip:
+    requirements: '/home/{{ personal_user }}/stuff/requirements.txt'
+    virtualenv: /usr/local/share/treasure/venv/
+  notify: wwww-data env directory
+  tags:
+    - treasure
+
+- name: install stuff as an editable requirement
+  pip:
+    editable: true
+    name: '/home/{{ personal_user }}/stuff/'
+    virtualenv: /usr/local/share/treasure/venv/
+    virtualenv_python: python3.8
+  notify: wwww-data env directory
+  tags:
+    - treasure
+
+- name: Git clone the treasure map app
+  git:
+    repo: https://github.com/fenimore/treasure-map
+    dest: /var/www/treasure.{{ domain }}
+  notify: wwww-data directory
+  tags:
+    - treasure
+
+- name: install treasure map pip requirements
+  pip:
+    requirements: '/var/www/treasure.{{ domain }}/requirements.txt'
+    virtualenv: /usr/local/share/treasure/venv/
+  notify: wwww-data env directory
+  tags:
+    - treasure
+
+- name: Touch the db file
+  file:
+    path: '/usr/local/share/treasure/treasure.db'
+    state: touch
+  notify: wwww-data env directory
+  tags:
+    - treasure
+
+- name: Set treasure service file
+  template:
+    src: treasure.service.j2
+    dest: /etc/systemd/system/treasure.service
+  notify: restart treasure
+  tags:
+    - treasure
+
+- name: Reload treasure service
+  systemd:
+    daemon_reload: yes
+    state: started
+    enabled: yes
+    name: treasure
+  tags:
+    - treasure
+
+- name: Allow access to port 8000
+  ufw:
+    rule: allow
+    port: '8989'
+  tags:
+    - treasure
+
+- name: Generate the treasure map proxy pass server block
+  template:
+    src: treasure-site.j2
+    dest: /etc/nginx/sites-available/treasure
+  notify: restart nginx
+  tags:
+    - treasure
+
+- name: Activate treasure proxy pass site
+  file:
+    src: /etc/nginx/sites-available/treasure
+    dest: /etc/nginx/sites-enabled/treasure
+    state: link
+  notify: restart nginx
+  tags:
+    - treasure
+
+# # run with certonly so it doesn't modify site-enabled sites
+# # will fail without setting DNS records
+# - name: Certbot generate keys for treasure subdomain
+#   shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --agree-tos --cert-name {{ domain }} --domains={{ domain }},{{ domain}},wink.{{ domain }},www.wink.{{ domain }},storage.{{ domain }},treasure.{{ domain }},www.treasure.{{ domain }}
+#   tags:
+#     - treasure
+
+- name: Test that the nginx config is valid
+  shell: nginx -c /etc/nginx/nginx.conf -t
+  tags:
+    - treasure
+    - nginx
