@@ -1,0 +1,3 @@
+db_path: {{ db_path }}
+proxy: {{ proxy }}
+debug: false

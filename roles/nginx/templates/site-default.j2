@@ -17,18 +17,17 @@ server {
   listen 80 default_server;
   listen [::]:80 default_server;
 
-  listen [::]:443 ssl ipv6only=on; # managed by Ansible from Certbot
-  listen 443 ssl;
-
+  # listen [::]:443 ssl ipv6only=on; # managed by Ansible from Certbot
+  # listen 443 ssl;
 
   # Note: You should disable gzip for SSL traffic.
   # See: https://bugs.debian.org/773332 TODO:
 
+  server_name {{ domain }} www.{{domain}};
+
   root /var/www/html;
 
-  index index.html
-
-  server_name {{ domain }} www.{{domain}};
+  index index.html;
 
   location / {
     # First attempt to serve request as file, then

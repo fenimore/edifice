@@ -87,7 +87,7 @@
 
 - name: Generate the minio proxy pass server block
   template:
-    src: minio-site.j2
+    src: site-minio.j2
     dest: /etc/nginx/sites-available/minio
   notify: restart nginx
   tags:

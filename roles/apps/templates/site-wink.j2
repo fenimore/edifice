@@ -1,14 +1,13 @@
 server {
-  root /var/www/wink.{{ domain }};
-  index index.html index.php;
-
-  server_name wink.{{ domain }} www.wink.{{ domain }};
-
   listen 80;
   listen [::]:80;
 
-  listen [::]:443;
   listen 443;
+  listen [::]:443;
+
+  server_name wink.{{ domain }} www.wink.{{ domain }};
+  root /var/www/wink.{{ domain }};
+  index index.html index.php;
 
   location / {
     # First attempt to serve request as file, then
@@ -20,6 +19,6 @@ server {
 
   location ~ \.php$ {
            include snippets/fastcgi-php.conf;
-           fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+           fastcgi_pass unix:/run/php/php7.4-fpm.sock;
   }
 }

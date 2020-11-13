@@ -13,7 +13,7 @@
     state=restarted
     enabled=yes
 
-- name: wwww-data env directory
+- name: treasure permission
   file:
     state: directory
     recurse: yes

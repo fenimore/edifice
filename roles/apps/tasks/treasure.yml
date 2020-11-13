@@ -17,7 +17,7 @@
     virtualenv_python: python3.8
     name:
       - gunicorn
-  notify: wwww-data env directory
+  notify: treasure permission
   tags:
     - treasure
 
@@ -49,25 +49,26 @@
 - name: Git clone the stuff repo
   git:
     repo: https://github.com/fenimore/stuff
-    dest: '/home/{{ personal_user }}/stuff'
+    dest: /usr/local/share/treasure/stuff
+    force: yes
   tags:
     - treasure
 
 - name: install stuff pip requirements
   pip:
-    requirements: '/home/{{ personal_user }}/stuff/requirements.txt'
+    requirements: /usr/local/share/treasure/stuff/requirements.txt
     virtualenv: /usr/local/share/treasure/venv/
-  notify: wwww-data env directory
+  notify: treasure permission
   tags:
     - treasure
 
 - name: install stuff as an editable requirement
   pip:
     editable: true
-    name: '/home/{{ personal_user }}/stuff/'
+    name: /usr/local/share/treasure/stuff
     virtualenv: /usr/local/share/treasure/venv/
     virtualenv_python: python3.8
-  notify: wwww-data env directory
+  notify: treasure permission
   tags:
     - treasure
 
@@ -75,7 +76,16 @@
   git:
     repo: https://github.com/fenimore/treasure-map
     dest: /var/www/treasure.{{ domain }}
+    force: yes
   notify: wwww-data directory
+  tags:
+    - treasure
+
+- name: Set treasure map config file
+  template:
+    src: treasure.config.yml
+    dest: /var/www/treasure.{{ domain }}/config.yml
+  notify: restart treasure
   tags:
     - treasure
 
@@ -83,7 +93,7 @@
   pip:
     requirements: '/var/www/treasure.{{ domain }}/requirements.txt'
     virtualenv: /usr/local/share/treasure/venv/
-  notify: wwww-data env directory
+  notify: treasure permission
   tags:
     - treasure
 
@@ -91,7 +101,7 @@
   file:
     path: '/usr/local/share/treasure/treasure.db'
     state: touch
-  notify: wwww-data env directory
+  notify: treasure permission
   tags:
     - treasure
 
@@ -121,7 +131,7 @@
 
 - name: Generate the treasure map proxy pass server block
   template:
-    src: treasure-site.j2
+    src: site-treasure.j2
     dest: /etc/nginx/sites-available/treasure
   notify: restart nginx
   tags:

@@ -17,6 +17,7 @@
   git:
     repo: https://github.com/{{ personal_github }}/dotfiles
     dest: /home/{{ personal_user }}/dotfiles
+    force: yes
   tags:
     -config
 
