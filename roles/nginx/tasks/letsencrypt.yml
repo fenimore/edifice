@@ -35,8 +35,9 @@
 
 # run with certonly so it doesn't modify site-enabled sites
 # Only run this when the cert exists
+# Run this once for all subdomains, force overwrite for new subdomains?
 - name: Certbot create certs
-  shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --cert-name={{ domain }} --agree-tos --domains={{ domain }},www.{{ domain }}
+  shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --cert-name={{ domain }} --agree-tos --domains={{ all_domains }} --cert-name {{ domain }}
   when: cert_exists.stat.exists == False
   tags:
     - nginx
@@ -51,6 +52,20 @@
     - nginx
     - letsencrypt
 
+- lineinfile:
+    path: /etc/nginx/nginx.conf
+    state: present
+    insertafter: 'include /etc/nginx/sites-enabled'
+    line: 'include /etc/nginx/conf.d/*.conf;'
+
+- lineinfile:
+    path: /etc/nginx/sites-available/default
+    state: present
+    insertafter: 'listen \[::\]:80'
+    line: |
+      listen [::]:443 ssl ipv6only=on;
+      listen 443 ssl;
+
 - name: Make sure www-data user can access keys
   file:
     state: directory
@@ -59,10 +74,9 @@
     owner: www-data
     group: www-data
 
-# # installer none will not start rogue nginx
-# - name: Certbot dry run renew test
-#   shell: certbot --installer none --dry-run renew
-#   ignore_errors: yes
-#   tags:
-#     - nginx
-#     - letsencrypt
+# installer none will not start rogue nginx
+- name: Certbot dry run renew test
+  shell: certbot --installer none --dry-run renew
+  tags:
+    - nginx
+    - letsencrypt

@@ -102,15 +102,6 @@
   tags:
     - minio
 
-# TODO: add thsi to letsencrypt with "list of subdomain" instead
-# of having it live here and in wink.yml
-# run with certonly so it doesn't modify site-enabled sites
-# will fail without setting DNS records
-- name: Certbot add keys for storage subdomain
-  shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --agree-tos --cert-name {{ domain }} --domains={{ domain }},{{ domain}},wink.{{ domain }},www.wink.{{ domain }},storage.{{ domain }}
-  tags:
-    - minio
-
 - name: Test that the nginx config is valid
   shell: nginx -c /etc/nginx/nginx.conf -t
   tags:
