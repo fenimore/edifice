@@ -16,16 +16,13 @@ http {
 
      include /etc/nginx/mime.types;
      default_type application/octet-stream;
-     ##
-     # SSL Settings
-     ## These settings are added by letsencrypt Certbot in a separate conf
-     # ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
-     # ssl_prefer_server_ciphers on;
+
      ##
      # Logging Settings
      ##
      access_log /var/log/nginx/access.log;
      error_log /var/log/nginx/error.log;
+
      ##
      # Gzip Settings
      ##

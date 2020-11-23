@@ -146,13 +146,6 @@
   tags:
     - treasure
 
-# # run with certonly so it doesn't modify site-enabled sites
-# # will fail without setting DNS records
-# - name: Certbot generate keys for treasure subdomain
-#   shell: certbot certonly --nginx -n --email={{ letsencrypt_email }} --agree-tos --cert-name {{ domain }} --domains={{ domain }},{{ domain}},wink.{{ domain }},www.wink.{{ domain }},storage.{{ domain }},treasure.{{ domain }},www.treasure.{{ domain }}
-#   tags:
-#     - treasure
-
 - name: Test that the nginx config is valid
   shell: nginx -c /etc/nginx/nginx.conf -t
   tags:

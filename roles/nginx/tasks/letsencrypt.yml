@@ -52,19 +52,52 @@
     - nginx
     - letsencrypt
 
-- lineinfile:
+- name: Add conf.d include for nginx and ssl
+  lineinfile:
     path: /etc/nginx/nginx.conf
     state: present
     insertafter: 'include /etc/nginx/sites-enabled'
     line: 'include /etc/nginx/conf.d/*.conf;'
+  tags:
+    - nginx
+    - letsencrypt
 
-- lineinfile:
+- name: Add 443 ssl listen to default nginx server block
+  lineinfile:
     path: /etc/nginx/sites-available/default
     state: present
     insertafter: 'listen \[::\]:80'
     line: |
-      listen [::]:443 ssl ipv6only=on;
-      listen 443 ssl;
+      listen 443 ssl http2;
+      listen [::]:443 ssl http2;
+  tags:
+    - nginx
+    - letsencrypt
+
+- name: Remove listen on 80
+  lineinfile:
+    path: /etc/nginx/sites-available/default
+    state: absent
+    regexp: "listen.*80"
+  tags:
+    - nginx
+    - letsencrypt
+
+- name: Add redirect from http to https
+  lineinfile:
+    path: /etc/nginx/sites-available/default
+    state: present
+    insertbefore: 'server {'
+    line: |
+      server {
+          listen 80 default_server;
+          listen [::]:80 default_server;
+          server_name _;
+          return 301 https://$host$request_uri;
+      }
+  tags:
+    - nginx
+    - letsencrypt
 
 - name: Make sure www-data user can access keys
   file:
@@ -73,6 +106,9 @@
     path: /etc/letsencrypt/live/
     owner: www-data
     group: www-data
+  tags:
+    - nginx
+    - letsencrypt
 
 # installer none will not start rogue nginx
 - name: Certbot dry run renew test
