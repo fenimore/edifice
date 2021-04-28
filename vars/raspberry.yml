@@ -1,5 +1,5 @@
 ---
-banner_text: |
+banner_text:
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~     ____                           ~
   ~    / __ )________  ___  ____  ___  ~
@@ -8,31 +8,14 @@ banner_text: |
   ~ /_____/_/   \___/\___/ /___/\___/  ~
   ~                                    ~
   ~                                    ~
-  ~        Welcome! Stay a While!      ~
-  ~                                    ~
+  ~        Raspberry Pi
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 personal_user: fenimore
 personal_github: fenimore
 
-protected: true
-
-domain: timenotclocks.com
+domain: raspberrypi
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
-extra_packages: [tree, htop, wget, goaccess, python3]
-
-# nginx
-personal_public_ip: 66.108.97.96
-letsencrypt_email: fenimore@timenotclocks.com
-
-# treasure
-proxy: http://treasure:password@0.0.0.0:3128
-
-# Minio
-minio_secret_key: password
-minio_access_key: access key
-
-# Wink configuration
-wink_admin: admin hash
-wink_visit: visiter hash
-wink_publisher: Fenimore Love
+extra_packages: [tree, htop, wget, python3]
+protected: false

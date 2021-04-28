@@ -1,0 +1,8 @@
+---
+- name: Setup RaspberryPi
+  hosts: raspberry
+  become: yes
+  vars_files: vars/raspberry.yml
+  roles:
+    - common
+    - raspberrypi

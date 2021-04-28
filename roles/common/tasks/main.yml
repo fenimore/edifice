@@ -1,5 +1,5 @@
 ##############################################################
-# Initial Server Setup, thanks Digital Ocean Community Guide :)
+# Initial Server Setup
 #
 # Install system packages
 # Sudo Group Setup
@@ -9,6 +9,7 @@
 # Set up UFW and fail2ban
 # Add SSH Banner
 #
+
 # see handlers.yml for the handler definitions
 ##############################################################
 ---
@@ -88,6 +89,7 @@
     state: present
     regexp: '^#?PermitRootLogin'
     line: 'PermitRootLogin prohibit-password'
+  when: protected
   tags:
     - setup
     - user
@@ -142,5 +144,5 @@
 - name: Clone and stow Dotfiles
   include: dotfiles.yml
 
-- name: Clone and stow emacs 26
-  include: emacs26.yml
+# - name: Clone and stow emacs 27
+#   include: emacs.yml

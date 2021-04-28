@@ -11,6 +11,9 @@
 [local]
 127.0.0.1
 
+[raspberry]
+raspberrypi
+
 
 ##########################################################################
 # Makes sure we use Python 3 (/usr/bin/python3) on remote hosts.

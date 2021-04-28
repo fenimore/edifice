@@ -1,0 +1,15 @@
+---
+- name: Install raspberry packages
+  copy:
+    src: raspi-mod.sh
+    dest: /home/pi/raspi-mod.sh
+  tags:
+    - pi
+
+
+- name: Adding personal user {{ user }} to groups for GPIO
+  user: name={{ personal_user }}
+        groups=pi,gpio
+        append=yes
+  tags:
+    - pi
