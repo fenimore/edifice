@@ -1,17 +1,4 @@
 ---
-banner_text:
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~     ____                           ~
-  ~    / __ )________  ___  ____  ___  ~
-  ~   / __  / ___/ _ \/ _ \/_  / / _ \ ~
-  ~  / /_/ / /  /  __/  __/ / /_/  __/ ~
-  ~ /_____/_/   \___/\___/ /___/\___/  ~
-  ~                                    ~
-  ~                                    ~
-  ~        Raspberry Pi
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
 personal_user: fenimore
 personal_github: fenimore
 
@@ -19,3 +6,6 @@ domain: raspberrypi
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 extra_packages: [tree, htop, wget, python3]
 protected: false
+
+spotifyd_version: v0.3.2
+spotify_dir: /opt/spotify

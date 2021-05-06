@@ -108,6 +108,7 @@
     state: enabled
     policy: deny
     direction: incoming
+  when: protected
   tags:
     - setup
     - ssh
@@ -116,6 +117,7 @@
   service:
     name: fail2ban
     enabled: yes
+  when: protected
   tags:
     - setup
     - ssh
@@ -126,6 +128,7 @@
     state: present
     line: "Banner /etc/banner"
   notify: restart sshd
+  when: banner_text is defined
   tags:
     - setup
     - ssh
@@ -134,6 +137,7 @@
   copy:
     content: "{{ banner_text }}"
     dest: /etc/banner
+  when: banner_text is defined
   tags:
     - setup
     - ssh
