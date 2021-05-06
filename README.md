@@ -16,6 +16,11 @@ This playbook includes my personal dotfiles and web applications, including my h
 2. The necessary SSH keys to connect to that host
 3. Ansible installed (in a python virtualenv)
 
+## RaspberryPi
+
+    touch vars/secrets.yml  # add spotify username and password
+    ansible-playbook -i hosts raspberrypi.yml --tags=pi
+
 ## Jitsi Playbook
 
     ansible-galaxy install systemli.letsencrypt
