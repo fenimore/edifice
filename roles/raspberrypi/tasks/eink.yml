@@ -7,16 +7,23 @@
       - libatlas-base-dev
       - libopenjp2-7
       - fortune
+      - python3-virtualenv
   tags:
     - eink
 
 - name: Install pip requirements
   pip:
     name: "{{ item }}"
-    executable: pip3
+    state: present
+    virtualenv: /opt/eink/venv/
+    virtualenv_python: python3
+    virtualenv_command: python3 -m virtualenv
   with_items:
     - matplotlib
     - font-source-sans-pro
+    - inky
+    - requests
+    - rpi.gpio
   tags:
     - eink
     - python

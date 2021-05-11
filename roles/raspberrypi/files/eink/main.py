@@ -5,8 +5,6 @@ import logging
 from inky import InkyWHAT
 
 from PIL import ImageFont
-from font_fredoka_one import FredokaOne
-
 from clear import clear
 from api import save_png
 from draw import prepare, show as draw
