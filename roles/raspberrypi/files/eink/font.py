@@ -1,0 +1,8 @@
+"DejaVuSans-Bold.ttf"
+"DejaVuSansMono-Bold.ttf"
+"DejaVuSansMono.ttf"
+"DejaVuSans.ttf"
+"DejaVuSerif-Bold.ttf"
+"DejaVuSerif.ttf"
+"DroidSansFallbackFull.ttf"
+"NotoMono-Regular.ttf"

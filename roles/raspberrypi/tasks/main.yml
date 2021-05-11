@@ -7,16 +7,6 @@
     - pi
     - conf
 
-- name: Install required Alsa packages
-  apt:
-    state: latest
-    update_cache: yes
-    name:
-      - alsa-utils
-  tags:
-    - pi
-    - spotify
-
 - name: Adding personal user {{ user }} to groups for GPIO
   user: name={{ personal_user }}
         groups=pi,gpio,audio,video,spi,i2c,plugdev,netdev,input,adm,dialout,cdrom,games
@@ -28,3 +18,6 @@
 - name: Spotify tasks
   include: spotify.yml
   when: spotify_user is defined
+
+- name: Eink tasks
+  include: eink.yml

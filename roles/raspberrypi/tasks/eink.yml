@@ -1,0 +1,81 @@
+- name: Install required Inky Packages
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - libtiff5
+      - libatlas-base-dev
+      - libopenjp2-7
+      - fortune
+  tags:
+    - eink
+
+- name: Install pip requirements
+  pip:
+    name: "{{ item }}"
+    executable: pip3
+  with_items:
+    - matplotlib
+    - font-source-sans-pro
+  tags:
+    - eink
+    - python
+
+- name: Copy Eink Python Script
+  copy:
+    src: eink/
+    dest: /opt/eink/eink/
+    owner: fenimore
+    group: fenimore
+    mode: 0777
+  tags:
+    - eink
+    - python
+
+- name: Copy Matisse
+  copy:
+    src: "{{ item }}"
+    dest: /opt/eink/resources/
+    owner: fenimore
+    group: fenimore
+  with_items:
+    - matisse.png
+    - promenade_des_anglais.jpg
+  tags:
+    - eink
+
+- name: Copy fortune quotes
+  copy:
+    src: quotes
+    dest: /usr/share/games/fortunes/
+    owner: fenimore
+    group: fenimore
+  tags:
+    - eink
+    - fortune
+
+- name: Generate dat files for fortunes
+  ansible.builtin.shell: strfile quotes
+  args:
+    chdir: /usr/share/games/fortunes/
+  tags:
+    - eink
+    - fortune
+
+- name: Create Gidole directory
+  file:
+    path: /usr/share/fonts/truetype/gidole
+    state: directory
+    mode:  0755
+  tags:
+    - font
+    - eink
+
+- name: Download Gidole Font
+  get_url:
+    url: https://github.com/larsenwork/Gidole/raw/master/Resources/GidoleFont/Gidole-Regular.ttf
+    dest: /usr/share/fonts/truetype/gidole/
+    mode: 0644
+  tags:
+    - eink
+    - font

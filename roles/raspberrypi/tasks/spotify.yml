@@ -1,4 +1,14 @@
 ---
+- name: Install required Alsa packages
+  apt:
+    state: latest
+    update_cache: yes
+    name:
+      - alsa-utils
+  tags:
+    - pi
+    - spotify
+
 - name: Creates Spotify opt and bin directories
   file:
     path: "{{ spotify_dir }}/bin"
@@ -85,12 +95,25 @@
   service:
     name: spotifyd
     state: restarted
-  when: service_template.changed or conf_template.changed
+  when: service_template.changed
   tags:
     - pi
     - spotify
     - service
     - conf
+
+- name: Add cron job for restarting spotifyd
+  ansible.builtin.cron:
+    name: "restart spotifyd"
+    minute: "0"
+    hour: "*"
+    user: root
+    job: "systemctl restart spotifyd"
+  tags:
+    - spotify
+    - pi
+    - cron
+
 
 # Attempt at getting dbus to work https://serverfault.com/a/906224
 # dest: /etc/systemd/user/spotifyd.service
