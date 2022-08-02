@@ -106,7 +106,7 @@
   ansible.builtin.cron:
     name: "restart spotifyd"
     minute: "0"
-    hour: "*"
+    hour: "2,14"
     user: root
     job: "systemctl restart spotifyd"
   tags:
@@ -139,14 +139,14 @@
 #     - service
 #    - spotify
 
-# - name: Enable Spotifd service
-#   become: yes
-#   ansible.builtin.systemd:
-#     name: spotifyd
-#     state: started
-#     enabled: yes
-#     scope: system
-#   tags:
-#     - pi
-#     - spotify
-#     - service
+- name: Enable Spotifd service
+  become: yes
+  ansible.builtin.systemd:
+    name: spotifyd
+    state: started
+    enabled: yes
+    scope: system
+  tags:
+    - pi
+    - spotify
+    - service

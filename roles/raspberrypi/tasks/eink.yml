@@ -24,6 +24,13 @@
     - inky
     - requests
     - rpi.gpio
+    - gpiozero
+    - ipython
+    - invoke
+    - font-fredoka-one
+    - font-source-serif-pro
+    - font-hanken-grotesk
+    - font-intuitive
   tags:
     - eink
     - python
@@ -46,8 +53,8 @@
     owner: fenimore
     group: fenimore
   with_items:
-    - matisse.png
-    - promenade_des_anglais.jpg
+    - images/matisse.png
+    - images/promenade_des_anglais.jpg
   tags:
     - eink
 
@@ -86,3 +93,27 @@
   tags:
     - eink
     - font
+
+- name: Copy Weather Font
+  copy:
+    src: fonts/weathericons-regular-webfont.ttf
+    dest: /usr/share/fonts/truetype/weathericons/
+    owner: fenimore
+    group: fenimore
+  tags:
+    - eink
+    - weather
+    - font
+
+
+- name: Add cron job for restarting spotifyd
+  ansible.builtin.cron:
+    name: "restart spotifyd"
+    minute: "0"
+    hour: "*"
+    user: root
+    job: "systemctl restart spotifyd"
+  tags:
+    - spotify
+    - pi
+    - cron

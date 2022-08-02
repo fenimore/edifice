@@ -23,7 +23,7 @@
 - name: Git clone the portfolio app
   git:
     repo: https://github.com/fenimore/fenimore.github.io
-    dest: /var/www/html/portfolio
+    dest: /var/www/html/portfolio90
   notify: wwww-data directory
   tags:
     - app

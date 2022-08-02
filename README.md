@@ -29,7 +29,7 @@ Add a `vars/secrets.yml` variables file (leave empty to skip spotify configurati
 Raspbian (Debian) playbook:
 
     touch vars/secrets.yml  # add spotify username and password
-    ansible-playbook -i hosts raspberrypi.yml --tags=pi
+    ansible-playbook -i hosts raspberrypi.yml --tags=pi -u pi
 
 ## Jitsi Playbook
 
