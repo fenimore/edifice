@@ -9,7 +9,7 @@
     - personal_user: flove
     - homebrew_cask_accept_external_apps: true
     - homebrew_taps:
-        - d12frosted/emacs-plus
+        - hashicorp/tap
     - homebrew_installed_packages:
         - htop
         - tree
@@ -24,12 +24,16 @@
         - cowsay
         - git
         - postgresql
-        - emacs-plus
+        - terraform
+        - gpg
         - python
+        - jq
+        - sdm
+        - hashicorp/tap/vault
     - homebrew_cask_apps:
-        - dashlane
         - firefox
-        - spectacle
+        - spotify
+        - rectangle
         - slack
         - docker
         - google-chrome
